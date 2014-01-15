@@ -20,7 +20,7 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include "level.h"
 
 void free_level(level **map) {
-    int i, j;
+    int i;
 
     for (i = 0; i < (*map)->width; i++) {
         free((*map)->data[i]);

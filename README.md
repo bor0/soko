@@ -12,7 +12,6 @@ Write "make" to get soko executable.
 Write "./soko 1" or "./soko 2" to run soko with level 1.dat and 2.dat, respectively.
 
 TODO:
-- Make a Windows port
 - render() is handling victory, while it is supposed to do rendering only. I did this to avoid parsing the matrix more than once.
 - Use configure instead of make?
 

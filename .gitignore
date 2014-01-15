@@ -1,2 +1,7 @@
 soko
 soko.tar.gz
+soko.ppx
+soko.tag
+output
+*.exe
+*.dll

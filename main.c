@@ -19,6 +19,7 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 
 #include "level.h"
+#include "soko_sdl.h"
 
 int main(int argc, char **argv) {
 

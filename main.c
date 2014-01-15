@@ -49,4 +49,6 @@ int main(int argc, char **argv) {
 
     free_level(&map);
 
+    return 0;
+
 }

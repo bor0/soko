@@ -47,7 +47,7 @@ void _render(SDL_Surface *screen, SDL_Surface **assets, int asset_width, int ass
         for (j = 0; j < map->height; j++) {
             tmp.x = i * asset_width;
             tmp.y = j * asset_height;
-            SDL_BlitSurface(assets[map->data[j][i]], NULL, screen, &tmp);
+            SDL_BlitSurface(assets[(int)map->data[j][i]], NULL, screen, &tmp);
         }
     }
 

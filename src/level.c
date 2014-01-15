@@ -19,15 +19,33 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include "level.h"
 
+#define _ASSERT_RET(x, y) \
+    free_level(&x); \
+    fclose(y); \
+    return NULL;
+
+#define _ASSERT_NULL(x, y, z) \
+    if (x == NULL) { \
+        _ASSERT_RET(y, z); \
+    }
+
 void free_level(level **map) {
     int i;
 
-    for (i = 0; i < (*map)->width; i++) {
-        free((*map)->data[i]);
-    }
+    if (*map != NULL) {
+        if ((*map)->data != NULL) {
+            for (i = 0; i < (*map)->width; i++) {
+                if ((*map)->data[i] != NULL) {
+                    free((*map)->data[i]);
+                }
+            }
 
-    free((*map)->data);
-    free(*map);
+            free((*map)->data);
+        }
+
+        free(*map);
+        *map = NULL;
+    }
 }
 
 level *read_level(char *level_name) {
@@ -44,17 +62,22 @@ level *read_level(char *level_name) {
         return NULL;
     }
 
-    map = (level *)malloc(sizeof(level));
+    map = malloc(sizeof(level));
 
-    if (fscanf(t, "%d %d", &map->width, &map->height) != 2) {
-        fclose(t);
-        return NULL;
+    _ASSERT_NULL(map, map, t);
+
+    if (fscanf(t, "%d %d", &map->width, &map->height) != 2 || map->width <= 0 || map->height <= 0) {
+        _ASSERT_RET(map, t);
     }
 
-    map->data = (char **)malloc(sizeof(char *) * map->height);
+    map->data = malloc(sizeof(char *) * map->height);
+
+    _ASSERT_NULL(map->data, map, t);
 
     for (i = 0; i < map->height; i++) {
         map->data[i] = malloc(sizeof(char) * map->width);
+
+        _ASSERT_NULL(map->data[i], map, t);
 
         for (j = 0; j < map->width; j++) {
             /* file does not contain enough information */
@@ -82,7 +105,6 @@ level *read_level(char *level_name) {
                 }
             }
         }
-
     }
 
     fclose(t);
@@ -97,4 +119,3 @@ level *read_level(char *level_name) {
 
     return map;
 }
-

@@ -13,7 +13,7 @@ To clone me: Write `git clone git@github.com:bor0/soko.git`
 - Windows users:
     1. Use Pelles C on the soko.ppj project file
 
-Music by Spotz.
+Credits: Spotz (music), 0xcaca0 (code fixes).
 
 Boro Sitnikovski
 

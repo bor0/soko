@@ -19,7 +19,6 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 
 void _update_map(level *map, int new_x, int new_y) {
-
     if (map->player_on_beacon) {
         map->data[map->player_y][map->player_x] = LEVEL_BEACON;
         map->player_on_beacon = 0;
@@ -84,7 +83,6 @@ void play(level *map, int dx, int dy) {
             }
             break;
     }
-
 }
 
 int check_win(level *map) {

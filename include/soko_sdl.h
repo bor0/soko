@@ -17,4 +17,4 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "level.h"
 
-void sokosdl_main(level *, int, int);
+void sokosdl_main(struct level *, int, int);

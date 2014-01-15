@@ -23,7 +23,8 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include "soko_sdl.h"
 #include "game.h"
 
-SDL_Surface *_img_loader(char *file) {
+static SDL_Surface *_img_loader(char *file)
+{
     SDL_Surface *pic;
 
     pic = IMG_Load(file);
@@ -37,7 +38,8 @@ SDL_Surface *_img_loader(char *file) {
     return pic;
 }
 
-void _render(SDL_Surface *screen, SDL_Surface **assets, int asset_width, int asset_height, level *map) {
+static void _render(SDL_Surface *screen, SDL_Surface **assets, int asset_width, int asset_height, struct level *map)
+{
     SDL_Rect tmp = { 0, 0, asset_width, asset_height };
     int i, j;
 
@@ -54,7 +56,8 @@ void _render(SDL_Surface *screen, SDL_Surface **assets, int asset_width, int ass
     SDL_Flip(screen);
 }
 
-void sokosdl_main(level *map, int asset_width, int asset_height) {
+void sokosdl_main(struct level *map, int asset_width, int asset_height)
+{
     SDL_Event event;
     SDL_Surface *screen, *assets[9];
     int run = 1;

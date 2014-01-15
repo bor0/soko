@@ -19,17 +19,20 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include "level.h"
 
-#define _ASSERT_RET(x, y) \
+#define _ASSERT_RET(x, y) do { \
     free_level(&x); \
     fclose(y); \
-    return NULL;
+    return NULL; \
+} while(0)
 
-#define _ASSERT_NULL(x, y, z) \
+#define _ASSERT_NULL(x, y, z) do { \
     if (x == NULL) { \
         _ASSERT_RET(y, z); \
-    }
+    } \
+} while(0)
 
-void free_level(level **map) {
+void free_level(struct level **map)
+{
     int i;
 
     if (*map != NULL) {
@@ -48,11 +51,12 @@ void free_level(level **map) {
     }
 }
 
-level *read_level(char *level_name) {
+struct level *read_level(char *level_name)
+{
     char buffer[512];
     FILE *t;
     int i, j, soko = 0, tmp;
-    level *map;
+    struct level *map;
 
     sprintf(buffer, "levels/%s.dat", level_name);
 
@@ -62,7 +66,7 @@ level *read_level(char *level_name) {
         return NULL;
     }
 
-    map = malloc(sizeof(level));
+    map = malloc(sizeof(struct level));
 
     _ASSERT_NULL(map, map, t);
 

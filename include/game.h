@@ -17,5 +17,5 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "level.h"
 
-void play(level *, int, int);
-int check_win(level *);
+void play(struct level *, int, int);
+int check_win(struct level *);

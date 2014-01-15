@@ -23,7 +23,7 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 
 int main(int argc, char **argv) {
     FILE *t;
-    level *map;
+    struct level *map;
     int asset_width = 32, asset_height = 32;
 
     if (argc < 2) {

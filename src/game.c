@@ -18,7 +18,8 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include "game.h"
 #include <stdio.h>
 
-void _update_map(level *map, int new_x, int new_y) {
+static void _update_map(struct level *map, int new_x, int new_y)
+{
     if (map->player_on_beacon) {
         map->data[map->player_y][map->player_x] = LEVEL_BEACON;
         map->player_on_beacon = 0;
@@ -37,7 +38,8 @@ void _update_map(level *map, int new_x, int new_y) {
     map->data[new_y][new_x] = LEVEL_SOKOBAN;
 }
 
-void play(level *map, int dx, int dy) {
+void play(struct level *map, int dx, int dy)
+{
     int new_player_x = map->player_x + dx;
     int new_player_y = map->player_y + dy;
     int box_x, box_y, beacon_toggle = 0;
@@ -85,7 +87,8 @@ void play(level *map, int dx, int dy) {
     }
 }
 
-int check_win(level *map) {
+int check_win(struct level *map)
+{
     int i, j, beacon = 0;
 
     for (i = 0; i < map->width; i++) {
@@ -103,4 +106,3 @@ int check_win(level *map) {
 
     return 0;
 }
-

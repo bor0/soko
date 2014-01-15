@@ -22,8 +22,9 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include "soko_sdl.h"
 
 int main(int argc, char **argv) {
-
+    FILE *t;
     level *map;
+    int asset_width = 32, asset_height = 32;
 
     if (argc < 2) {
         printf("Usage: %s <level name>\n", argv[0]);
@@ -37,7 +38,14 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    sokosdl_main(map);
+    t = fopen("assets.cfg", "r");
+
+    if (t) {
+        fscanf(t, "%d %d", &asset_width, &asset_height);
+        fclose(t);
+    }
+
+    sokosdl_main(map, asset_width, asset_height);
 
     free_level(&map);
 

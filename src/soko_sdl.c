@@ -23,9 +23,6 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include "soko_sdl.h"
 #include "game.h"
 
-#define ASSET_WIDTH 32
-#define ASSET_HEIGHT 32
-
 SDL_Surface *_img_loader(char *file) {
     SDL_Surface *pic;
 
@@ -40,16 +37,16 @@ SDL_Surface *_img_loader(char *file) {
     return pic;
 }
 
-void _render(SDL_Surface *screen, SDL_Surface **assets, level *map) {
-    SDL_Rect tmp = { 0, 0, ASSET_WIDTH, ASSET_HEIGHT };
+void _render(SDL_Surface *screen, SDL_Surface **assets, int asset_width, int asset_height, level *map) {
+    SDL_Rect tmp = { 0, 0, asset_width, asset_height };
     int i, j;
 
     SDL_FillRect(screen, NULL, 0);
 
     for (i = 0; i < map->width; i++) {
         for (j = 0; j < map->height; j++) {
-            tmp.x = i*ASSET_WIDTH;
-            tmp.y = j*ASSET_HEIGHT;
+            tmp.x = i * asset_width;
+            tmp.y = j * asset_height;
             SDL_BlitSurface(assets[map->data[j][i]], NULL, screen, &tmp);
         }
     }
@@ -57,7 +54,7 @@ void _render(SDL_Surface *screen, SDL_Surface **assets, level *map) {
     SDL_Flip(screen);
 }
 
-void sokosdl_main(level *map) {
+void sokosdl_main(level *map, int asset_width, int asset_height) {
     SDL_Event event;
     SDL_Surface *screen, *assets[9];
     int run = 1;
@@ -67,7 +64,7 @@ void sokosdl_main(level *map) {
 
     SDL_WM_SetCaption("Soko v1.0 by Boro Sitnikovski", NULL);
 
-    screen = SDL_SetVideoMode(ASSET_WIDTH * map->width, ASSET_HEIGHT * map->height, 32, SDL_DOUBLEBUF|SDL_HWSURFACE|SDL_ANYFORMAT);
+    screen = SDL_SetVideoMode(asset_width * map->width, asset_height * map->height, 32, SDL_DOUBLEBUF|SDL_HWSURFACE|SDL_ANYFORMAT);
 
     assets[LEVEL_EMPTY] = _img_loader("gfx/empty.png");
     assets[LEVEL_WALL] = _img_loader("gfx/wall.png");
@@ -118,7 +115,7 @@ void sokosdl_main(level *map) {
                     break;
             }
         }
-        _render(screen, assets, map);
+        _render(screen, assets, asset_width, asset_height, map);
         if (check_win(map) == 1) {
             printf("You won!\n");
             run = 0;

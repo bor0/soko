@@ -48,6 +48,17 @@ void soko_play(level *map, int dy, int dx) {
     if (new_player_x < 0 || new_player_y < 0 || new_player_x > map->width || new_player_y > map->height) return;
 
     switch (map->data[new_player_x][new_player_y]) {
+        case LEVEL_KEY:
+            map->key_count++;
+            updatemap(map, new_player_x, new_player_y);
+            printf("Found a key!\n");
+            break;
+        case LEVEL_DOOR:
+            if (map->key_count > 0) {
+                map->key_count--;
+                updatemap(map, new_player_x, new_player_y);
+            }
+            break;
         case LEVEL_BEACON:
         case LEVEL_TERRAIN:
             updatemap(map, new_player_x, new_player_y);

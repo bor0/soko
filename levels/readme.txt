@@ -8,6 +8,8 @@ Values:
 4: beacon
 5: b_beacon
 6: sokoban
+7: door (to be opened with key)
+8: key (texture looks just like terrain, so it's a hidden key)
 
 A map must have one and only one '6' (sokoban).
 

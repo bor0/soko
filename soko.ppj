@@ -8,14 +8,14 @@ POC_PROJECT_TYPE = 3#
 POC_PROJECT_OUTPUTDIR = output#
 POC_PROJECT_RESULTDIR = .#
 POC_PROJECT_ARGUMENTS = #
-POC_PROJECT_WORKPATH = win32-bin/#
+POC_PROJECT_WORKPATH = win32-bin#
 POC_PROJECT_EXECUTOR = #
 CC = pocc.exe#
 AS = poasm.exe#
 RC = porc.exe#
 LINK = polink.exe#
 SIGN = posign.exe#
-CCFLAGS = -std:C11 -Tx86-coff -Ot -Ob1 -fp:precise -W1 -Gd -Ze #
+CCFLAGS = -std:C99 -Tx86-coff -Ot -Ob1 -fp:precise -W1 -Gd -Ze #
 ASFLAGS = -AIA32 -Gd #
 RCFLAGS = #
 LINKFLAGS = -subsystem:console -machine:x86 kernel32.lib advapi32.lib delayimp.lib SDL_mixer.lib SDL_image.lib SDL.lib#
@@ -27,9 +27,9 @@ LIB = $(PellesCDir)\Lib\Win;$(PellesCDir)\Lib;SDL-1.2.15\lib\x86;SDL_image-1.2.1
 # Build soko.exe.
 # 
 soko.exe: \
-	output\main.obj \
 	output\game.obj \
 	output\level.obj \
+	output\main.obj \
 	output\soko_sdl.obj
 	$(LINK) $(LINKFLAGS) -out:"$@" $**
 
@@ -46,7 +46,9 @@ output\main.obj: \
 # Build game.obj.
 # 
 output\game.obj: \
-	src\game.c
+	src\game.c \
+	include\game.h \
+	include\level.h
 	$(CC) $(CCFLAGS) "$!" -Fo"$@"
 
 # 
@@ -61,9 +63,42 @@ output\level.obj: \
 # Build soko_sdl.obj.
 # 
 output\soko_sdl.obj: \
-	src\soko_sdl.c
+	src\soko_sdl.c \
+	include\game.h \
+	include\level.h \
+	include\soko_sdl.h \
+	SDL_image-1.2.12\include\SDL_image.h \
+	SDL_mixer-1.2.12\include\SDL_mixer.h \
+	SDL-1.2.15\include\begin_code.h \
+	SDL-1.2.15\include\close_code.h \
+	SDL-1.2.15\include\SDL.h \
+	SDL-1.2.15\include\SDL_active.h \
+	SDL-1.2.15\include\SDL_audio.h \
+	SDL-1.2.15\include\SDL_cdrom.h \
+	SDL-1.2.15\include\SDL_config.h \
+	SDL-1.2.15\include\SDL_config_minimal.h \
+	SDL-1.2.15\include\SDL_cpuinfo.h \
+	SDL-1.2.15\include\SDL_endian.h \
+	SDL-1.2.15\include\SDL_error.h \
+	SDL-1.2.15\include\SDL_events.h \
+	SDL-1.2.15\include\SDL_joystick.h \
+	SDL-1.2.15\include\SDL_keyboard.h \
+	SDL-1.2.15\include\SDL_keysym.h \
+	SDL-1.2.15\include\SDL_loadso.h \
+	SDL-1.2.15\include\SDL_main.h \
+	SDL-1.2.15\include\SDL_mouse.h \
+	SDL-1.2.15\include\SDL_mutex.h \
+	SDL-1.2.15\include\SDL_platform.h \
+	SDL-1.2.15\include\SDL_quit.h \
+	SDL-1.2.15\include\SDL_rwops.h \
+	SDL-1.2.15\include\SDL_stdinc.h \
+	SDL-1.2.15\include\SDL_thread.h \
+	SDL-1.2.15\include\SDL_timer.h \
+	SDL-1.2.15\include\SDL_types.h \
+	SDL-1.2.15\include\SDL_version.h \
+	SDL-1.2.15\include\SDL_video.h
 	$(CC) $(CCFLAGS) "$!" -Fo"$@"
 
-.EXCLUDEDFILES:
-
 .SILENT:
+
+.EXCLUDEDFILES:

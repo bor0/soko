@@ -42,15 +42,19 @@ SDL_Surface *img_loader(char *file) {
 
 void render(SDL_Surface *screen, SDL_Surface **assets, level *map) {
     SDL_Rect tmp = { 0, 0, ASSET_WIDTH, ASSET_HEIGHT };
-    int i, j, beacon = 0;
+    int i, j, beacon = 0, asset;
 
     SDL_FillRect(screen, NULL, 0);
 
     for (i = 0; i < map->width; i++) {
         for (j = 0; j < map->height; j++) {
+            asset = map->data[j][i];
+            if (asset == LEVEL_KEY) {
+                asset = LEVEL_TERRAIN;
+            }
             tmp.x = i*ASSET_WIDTH;
             tmp.y = j*ASSET_HEIGHT;
-            SDL_BlitSurface(assets[map->data[j][i]], NULL, screen, &tmp);
+            SDL_BlitSurface(assets[asset], NULL, screen, &tmp);
             if (map->data[j][i] == LEVEL_BEACON) beacon = 1;
         }
     }
@@ -65,8 +69,9 @@ void render(SDL_Surface *screen, SDL_Surface **assets, level *map) {
 
 void sokosdl_main(level *map) {
     SDL_Event event;
-    SDL_Surface *screen, *assets[7];
+    SDL_Surface *screen, *assets[8];
     int run = 1;
+    Mix_Music *mus = NULL;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) return;
 
@@ -81,14 +86,15 @@ void sokosdl_main(level *map) {
     assets[LEVEL_BEACON] = img_loader("gfx/beacon.png");
     assets[LEVEL_B_BEACON] = img_loader("gfx/b_beacon.png");
     assets[LEVEL_SOKOBAN] = img_loader("gfx/sokoban.png");
+    assets[LEVEL_DOOR] = img_loader("gfx/door.png");
 
     if (SDL_Init(SDL_INIT_AUDIO) < 0) return;
 
     /* setup audio mode */
-    Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 640);
-    Mix_Music *mus;
-    mus = Mix_LoadMUS("music/untzuntz.mp3");
-    Mix_PlayMusic(mus, -1);
+    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 640) != -1) {
+        mus = Mix_LoadMUS("music/untzuntz.ogg");
+        Mix_PlayMusic(mus, -1);
+    }
 
     while (run) {
         while (SDL_PollEvent(&event)) {
@@ -124,9 +130,12 @@ void sokosdl_main(level *map) {
         render(screen, assets, map);
         if (map->win) {
             printf("You won!\n");
-            break;
+            run = 0;
         }
     }
 
-    Mix_FreeMusic(mus);
+    if (mus) {
+        Mix_CloseAudio();
+        Mix_FreeMusic(mus);
+    }
 }

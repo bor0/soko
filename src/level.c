@@ -65,7 +65,7 @@ level *read_level(char *level_name) {
             }
 
             /* handle overflow or underflow */
-            if (tmp > LEVEL_SOKOBAN || tmp < LEVEL_EMPTY) {
+            if (tmp > LEVEL_KEY || tmp < LEVEL_EMPTY) {
                 tmp = LEVEL_WALL;
             }
 
@@ -93,7 +93,7 @@ level *read_level(char *level_name) {
         map->data[0][0] = LEVEL_SOKOBAN;
     }
 
-    map->player_on_beacon = map->win = 0;
+    map->player_on_beacon = map->win = map->key_count = 0;
 
     return map;
 }

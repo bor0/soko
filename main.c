@@ -47,6 +47,6 @@ int main(int argc, char **argv) {
 
     sokosdl_main(map, asset_width, asset_height);
 
-    free_level(&map);
+    free_level(map);
 
 }

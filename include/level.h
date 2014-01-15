@@ -27,6 +27,6 @@ typedef struct level {
 
 enum { LEVEL_EMPTY, LEVEL_WALL, LEVEL_TERRAIN, LEVEL_BOX, LEVEL_BEACON, LEVEL_B_BEACON, LEVEL_SOKOBAN, LEVEL_DOOR, LEVEL_KEY };
 
-void free_level(level **);
+void *free_level(level *);
 level *read_level(char *);
 

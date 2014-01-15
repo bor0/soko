@@ -19,15 +19,19 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include "level.h"
 
-void free_level(level **map) {
+void *free_level(level *map) {
     int i;
+    if(map!=NULL){
+        for (i = 0; i < map->width; i++) {
+        	if(map->data[i]!=NULL)
+                free(map->data[i]);
+        }
 
-    for (i = 0; i < (*map)->width; i++) {
-        free((*map)->data[i]);
+        if(map->data!=NULL)
+        	free(map->data);
+        free(map);
     }
-
-    free((*map)->data);
-    free(*map);
+    return NULL;
 }
 
 level *read_level(char *level_name) {
@@ -44,24 +48,29 @@ level *read_level(char *level_name) {
         return NULL;
     }
 
-    map = (level *)malloc(sizeof(level));
+    if((map = (level *)malloc(sizeof(level)))==NULL)
+    	return free_level(map);
 
     if (fscanf(t, "%d %d", &map->width, &map->height) != 2) {
         fclose(t);
-        return NULL;
+        return free_level(map);
+    }else{
+    	if(map->width<=0 && map->height<=0)
+    		return free_level(map);
     }
 
-    map->data = (char **)malloc(sizeof(char *) * map->height);
+    if((map->data = (char **)malloc(sizeof(char *) * map->height))==NULL)
+    	return free_level(map);
 
     for (i = 0; i < map->height; i++) {
-        map->data[i] = malloc(sizeof(char) * map->width);
+        if((map->data[i] = malloc(sizeof(char) * map->width))==NULL)
+    		return free_level(map);
 
         for (j = 0; j < map->width; j++) {
             /* file does not contain enough information */
             if (feof(t) || fscanf(t, "%d", &tmp) != 1) {
                 fclose(t);
-                free_level(&map);
-                return NULL;
+                return free_level(map);
             }
 
             /* handle overflow or underflow */
@@ -97,4 +106,3 @@ level *read_level(char *level_name) {
 
     return map;
 }
-

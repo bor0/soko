@@ -21,16 +21,16 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 
 void *free_level(level *map) {
     int i;
+    if(map!=NULL){
+        for (i = 0; i < map->width; i++) {
+        	if(map->data[i]!=NULL)
+                free(map->data[i]);
+        }
 
-    for (i = 0; i < map->width; i++) {
-    	if(map->data[i])
-            free(map->data[i]);
+        if(map->data!=NULL)
+        	free(map->data);
+        free(map);
     }
-
-    if(map->data)
-    	free(map->data);
-    if(map)
-    	free(map);
     return NULL;
 }
 

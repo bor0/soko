@@ -26,7 +26,7 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #define ASSET_WIDTH 32
 #define ASSET_HEIGHT 32
 
-SDL_Surface *img_loader(char *file) {
+SDL_Surface *_img_loader(char *file) {
     SDL_Surface *pic;
 
     pic = IMG_Load(file);
@@ -40,28 +40,18 @@ SDL_Surface *img_loader(char *file) {
     return pic;
 }
 
-void render(SDL_Surface *screen, SDL_Surface **assets, level *map) {
+void _render(SDL_Surface *screen, SDL_Surface **assets, level *map) {
     SDL_Rect tmp = { 0, 0, ASSET_WIDTH, ASSET_HEIGHT };
-    int i, j, beacon = 0, asset;
+    int i, j;
 
     SDL_FillRect(screen, NULL, 0);
 
     for (i = 0; i < map->width; i++) {
         for (j = 0; j < map->height; j++) {
-            asset = map->data[j][i];
-            if (asset == LEVEL_KEY) {
-                asset = LEVEL_TERRAIN;
-            }
             tmp.x = i*ASSET_WIDTH;
             tmp.y = j*ASSET_HEIGHT;
-            SDL_BlitSurface(assets[asset], NULL, screen, &tmp);
-            if (map->data[j][i] == LEVEL_BEACON) beacon = 1;
+            SDL_BlitSurface(assets[map->data[j][i]], NULL, screen, &tmp);
         }
-    }
-
-    /* shouldn't do victory update on rendering stuff */
-    if (!beacon && !map->player_on_beacon) {
-        map->win = 1;
     }
 
     SDL_Flip(screen);
@@ -69,7 +59,7 @@ void render(SDL_Surface *screen, SDL_Surface **assets, level *map) {
 
 void sokosdl_main(level *map) {
     SDL_Event event;
-    SDL_Surface *screen, *assets[8];
+    SDL_Surface *screen, *assets[9];
     int run = 1;
     Mix_Music *mus = NULL;
 
@@ -79,14 +69,15 @@ void sokosdl_main(level *map) {
 
     screen = SDL_SetVideoMode(ASSET_WIDTH * map->width, ASSET_HEIGHT * map->height, 32, SDL_DOUBLEBUF|SDL_HWSURFACE|SDL_ANYFORMAT);
 
-    assets[LEVEL_EMPTY] = img_loader("gfx/empty.png");
-    assets[LEVEL_WALL] = img_loader("gfx/wall.png");
-    assets[LEVEL_TERRAIN] = img_loader("gfx/terrain.png");
-    assets[LEVEL_BOX] = img_loader("gfx/box.png");
-    assets[LEVEL_BEACON] = img_loader("gfx/beacon.png");
-    assets[LEVEL_B_BEACON] = img_loader("gfx/b_beacon.png");
-    assets[LEVEL_SOKOBAN] = img_loader("gfx/sokoban.png");
-    assets[LEVEL_DOOR] = img_loader("gfx/door.png");
+    assets[LEVEL_EMPTY] = _img_loader("gfx/empty.png");
+    assets[LEVEL_WALL] = _img_loader("gfx/wall.png");
+    assets[LEVEL_TERRAIN] = _img_loader("gfx/terrain.png");
+    assets[LEVEL_BOX] = _img_loader("gfx/box.png");
+    assets[LEVEL_BEACON] = _img_loader("gfx/beacon.png");
+    assets[LEVEL_B_BEACON] = _img_loader("gfx/b_beacon.png");
+    assets[LEVEL_SOKOBAN] = _img_loader("gfx/sokoban.png");
+    assets[LEVEL_DOOR] = _img_loader("gfx/door.png");
+    assets[LEVEL_KEY] = _img_loader("gfx/key.png");
 
     if (SDL_Init(SDL_INIT_AUDIO) < 0) return;
 
@@ -102,16 +93,16 @@ void sokosdl_main(level *map) {
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
                         case SDLK_UP:
-                            soko_play(map, 0, -1);
+                            play(map, 0, -1);
                             break;
                         case SDLK_DOWN:
-                            soko_play(map, 0, 1);
+                            play(map, 0, 1);
                             break;
                         case SDLK_LEFT:
-                            soko_play(map, -1, 0);
+                            play(map, -1, 0);
                             break;
                         case SDLK_RIGHT:
-                            soko_play(map, 1, 0);
+                            play(map, 1, 0);
                             break;
                         case SDLK_ESCAPE:
                             run = 0;
@@ -127,8 +118,8 @@ void sokosdl_main(level *map) {
                     break;
             }
         }
-        render(screen, assets, map);
-        if (map->win) {
+        _render(screen, assets, map);
+        if (check_win(map) == 1) {
             printf("You won!\n");
             run = 0;
         }

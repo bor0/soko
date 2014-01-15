@@ -18,11 +18,11 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 typedef struct level {
     int width, height;
+    char **data;
+
     int player_x, player_y;
     int key_count;
     char player_on_beacon;
-    char win;
-    char **data;
 } level;
 
 enum { LEVEL_EMPTY, LEVEL_WALL, LEVEL_TERRAIN, LEVEL_BOX, LEVEL_BEACON, LEVEL_B_BEACON, LEVEL_SOKOBAN, LEVEL_DOOR, LEVEL_KEY };

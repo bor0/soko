@@ -18,66 +18,66 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include "game.h"
 #include <stdio.h>
 
-void updatemap(level *map, int new_x, int new_y) {
+void _update_map(level *map, int new_x, int new_y) {
 
     if (map->player_on_beacon) {
-        map->data[map->player_x][map->player_y] = LEVEL_BEACON;
+        map->data[map->player_y][map->player_x] = LEVEL_BEACON;
         map->player_on_beacon = 0;
     }
     else {
-        map->data[map->player_x][map->player_y] = LEVEL_TERRAIN;
+        map->data[map->player_y][map->player_x] = LEVEL_TERRAIN;
     }
 
     map->player_x = new_x;
     map->player_y = new_y;
 
-    if (map->data[new_x][new_y] == LEVEL_BEACON) {
+    if (map->data[new_y][new_x] == LEVEL_BEACON) {
         map->player_on_beacon = 1;
     }
 
-    map->data[new_x][new_y] = LEVEL_SOKOBAN;
+    map->data[new_y][new_x] = LEVEL_SOKOBAN;
 }
 
-void soko_play(level *map, int dy, int dx) {
+void play(level *map, int dx, int dy) {
     int new_player_x = map->player_x + dx;
     int new_player_y = map->player_y + dy;
     int box_x, box_y, beacon_toggle = 0;
 
-    printf("(%d, %d)\n", dy, dx);
+    printf("(%d, %d)\n", dx, dy);
 
-    if (new_player_x < 0 || new_player_y < 0 || new_player_x >= map->height || new_player_y >= map->width) return;
+    if (new_player_x < 0 || new_player_y < 0 || new_player_x >= map->width || new_player_y >= map->height) return;
 
-    switch (map->data[new_player_x][new_player_y]) {
+    switch (map->data[new_player_y][new_player_x]) {
         case LEVEL_KEY:
             map->key_count++;
-            updatemap(map, new_player_x, new_player_y);
+            _update_map(map, new_player_x, new_player_y);
             printf("Found a key!\n");
             break;
         case LEVEL_DOOR:
             if (map->key_count > 0) {
                 map->key_count--;
-                updatemap(map, new_player_x, new_player_y);
+                _update_map(map, new_player_x, new_player_y);
             }
             break;
         case LEVEL_BEACON:
         case LEVEL_TERRAIN:
-            updatemap(map, new_player_x, new_player_y);
+            _update_map(map, new_player_x, new_player_y);
             break;
         case LEVEL_B_BEACON:
             beacon_toggle = 1;
         case LEVEL_BOX:
             box_x = new_player_x + dx;
             box_y = new_player_y + dy;
-            if (box_x >= 0 && box_y >= 0 && box_x < map->height && box_y < map->width) {
-                switch (map->data[box_x][box_y]) {
+            if (box_x >= 0 && box_y >= 0 && box_x < map->width && box_y < map->height) {
+                switch (map->data[box_y][box_x]) {
                     case LEVEL_BEACON:
-                        map->data[box_x][box_y] = LEVEL_B_BEACON;
-                        updatemap(map, new_player_x, new_player_y);
+                        map->data[box_y][box_x] = LEVEL_B_BEACON;
+                        _update_map(map, new_player_x, new_player_y);
                         if (beacon_toggle) map->player_on_beacon = 1;
                         break;
                     case LEVEL_TERRAIN:
-                        map->data[box_x][box_y] = LEVEL_BOX;
-                        updatemap(map, new_player_x, new_player_y);
+                        map->data[box_y][box_x] = LEVEL_BOX;
+                        _update_map(map, new_player_x, new_player_y);
                         if (beacon_toggle) map->player_on_beacon = 1;
                         break;
                 }
@@ -86,3 +86,23 @@ void soko_play(level *map, int dy, int dx) {
     }
 
 }
+
+int check_win(level *map) {
+    int i, j, beacon = 0;
+
+    for (i = 0; i < map->width; i++) {
+        for (j = 0; j < map->height; j++) {
+            if (map->data[j][i] == LEVEL_BEACON) {
+                beacon = 1;
+                break;
+            }
+        }
+    }
+
+    if (!beacon && !map->player_on_beacon) {
+        return 1;
+    }
+
+    return 0;
+}
+

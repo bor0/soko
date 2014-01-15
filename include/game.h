@@ -17,4 +17,5 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "level.h"
 
-void soko_play(level *, int, int);
+void play(level *, int, int);
+int check_win(level *);

@@ -13,10 +13,6 @@ To clone me: Write `git clone git@github.com:bor0/soko.git`
 - Windows users:
     1. Use Pelles C on the soko.ppj project file
 
-TODO:
-- render() is handling victory, while it is supposed to do rendering only. I did this to avoid parsing the matrix more than once.
-- Use configure instead of make?
-
 Music by Spotz.
 
 Boro Sitnikovski

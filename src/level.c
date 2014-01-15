@@ -51,10 +51,10 @@ level *read_level(char *level_name) {
         return NULL;
     }
 
-    map->data = (char **)malloc(sizeof(char *) * map->width);
+    map->data = (char **)malloc(sizeof(char *) * map->height);
 
     for (i = 0; i < map->height; i++) {
-        map->data[i] = malloc(sizeof(char) * map->height);
+        map->data[i] = malloc(sizeof(char) * map->width);
 
         for (j = 0; j < map->width; j++) {
             /* file does not contain enough information */

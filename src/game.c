@@ -43,9 +43,9 @@ void soko_play(level *map, int dy, int dx) {
     int new_player_y = map->player_y + dy;
     int box_x, box_y, beacon_toggle = 0;
 
-    printf("(%d, %d)\n", dx, dy);
+    printf("(%d, %d)\n", dy, dx);
 
-    if (new_player_x < 0 || new_player_y < 0 || new_player_x > map->width || new_player_y > map->height) return;
+    if (new_player_x < 0 || new_player_y < 0 || new_player_x >= map->height || new_player_y >= map->width) return;
 
     switch (map->data[new_player_x][new_player_y]) {
         case LEVEL_KEY:
@@ -68,7 +68,7 @@ void soko_play(level *map, int dy, int dx) {
         case LEVEL_BOX:
             box_x = new_player_x + dx;
             box_y = new_player_y + dy;
-            if (box_x >= 0 && box_y >= 0 && box_x < map->width && box_y < map->height) {
+            if (box_x >= 0 && box_y >= 0 && box_x < map->height && box_y < map->width) {
                 switch (map->data[box_x][box_y]) {
                     case LEVEL_BEACON:
                         map->data[box_x][box_y] = LEVEL_B_BEACON;

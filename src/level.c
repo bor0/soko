@@ -104,8 +104,8 @@ struct level *read_level(char *level_name)
                     map->data[i][j] = LEVEL_WALL;
                 } else {
                     soko = 1;
-                    map->player_x = j;
-                    map->player_y = i;
+                    map->soko.x = j;
+                    map->soko.y = i;
                 }
             }
         }
@@ -115,11 +115,11 @@ struct level *read_level(char *level_name)
 
     /* if there is no soko specified in map assign it to pos (0, 0) */
     if (!soko) {
-        map->player_x = map->player_y = 0;
+        map->soko.x = map->soko.y = 0;
         map->data[0][0] = LEVEL_SOKOBAN;
     }
 
-    map->player_on_beacon = map->key_count = 0;
+    map->soko.player_on_beacon = map->soko.key_count = 0;
 
     return map;
 }

@@ -90,32 +90,32 @@ void sokosdl_main(struct level *map, int asset_width, int asset_height)
     while (run) {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_UP:
-                            play(map, 0, -1);
-                            break;
-                        case SDLK_DOWN:
-                            play(map, 0, 1);
-                            break;
-                        case SDLK_LEFT:
-                            play(map, -1, 0);
-                            break;
-                        case SDLK_RIGHT:
-                            play(map, 1, 0);
-                            break;
-                        case SDLK_ESCAPE:
-                            run = 0;
-                            break;
-                        default:
-                            break;
-                    }
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                case SDLK_UP:
+                    play(map, 0, -1);
                     break;
-                case SDL_QUIT:
+                case SDLK_DOWN:
+                    play(map, 0, 1);
+                    break;
+                case SDLK_LEFT:
+                    play(map, -1, 0);
+                    break;
+                case SDLK_RIGHT:
+                    play(map, 1, 0);
+                    break;
+                case SDLK_ESCAPE:
                     run = 0;
                     break;
                 default:
                     break;
+                }
+                break;
+            case SDL_QUIT:
+                run = 0;
+                break;
+            default:
+                break;
             }
         }
         _render(screen, assets, asset_width, asset_height, map);

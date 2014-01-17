@@ -18,6 +18,13 @@ along with Soko. If not, see <http://www.gnu.org/licenses/>.
 #include "game.h"
 #include <stdio.h>
 
+static int _bounds_check(struct level *map, int x, int y)
+{
+    if (x < 0 || y < 0 || x >= map->width || y >= map->height) return 0;
+    return 1;
+}
+
+/* this function assumes bounds are valid */
 static void _update_soko(struct level *map, int new_x, int new_y)
 {
     /* if player is on beacon, update old position with beacon */
@@ -42,36 +49,36 @@ static void _update_soko(struct level *map, int new_x, int new_y)
     map->data[new_y][new_x] = LEVEL_SOKOBAN;
 }
 
-static void _update_box(struct level *map, int box_x, int box_y, int new_player_x, int new_player_y)
+/* this function assumes bounds are valid */
+static int _update_box(struct level *map, int box_x, int box_y, int new_player_x, int new_player_y)
 {
+    int ret = 0;
+
     switch (map->data[box_y][box_x]) {
     /* convert beacon to boxed beacon */
     case LEVEL_BEACON:
         map->data[box_y][box_x] = LEVEL_B_BEACON;
-        _update_soko(map, new_player_x, new_player_y);
+        ret = 1;
         break;
     /* convert terrain to box */
     case LEVEL_TERRAIN:
         map->data[box_y][box_x] = LEVEL_BOX;
-        _update_soko(map, new_player_x, new_player_y);
+        ret = 1;
         break;
     /* can't push against other things */
     default:
         break;
     }
-}
 
-static int _bounds_check(struct level *map, int x, int y)
-{
-    if (x < 0 || y < 0 || x >= map->width || y >= map->height) return 0;
-    return 1;
+    return ret;
+
 }
 
 void play(struct level *map, int dx, int dy)
 {
     int new_player_x = map->soko.x + dx;
     int new_player_y = map->soko.y + dy;
-    int box_x, box_y, beacon_toggle = 0;
+    int box_x, box_y;
 
     if (!_bounds_check(map, new_player_x, new_player_y)) {
         return;
@@ -97,16 +104,21 @@ void play(struct level *map, int dx, int dy)
         break;
     /* when pushing a boxed beacon, set beacon flag to 1 (in case move is successful and we step into a beacon) */
     case LEVEL_B_BEACON:
-        beacon_toggle = 1;
+        box_x = new_player_x + dx;
+        box_y = new_player_y + dy;
+        if (_bounds_check(map, box_x, box_y)) {
+            /* if it is a successful box update and move, set beacon flag */
+            if (_update_box(map, box_x, box_y, new_player_x, new_player_y)) {
+                _update_soko(map, new_player_x, new_player_y);
+                map->soko.player_on_beacon = 1;
+            }
+        }
+        break;
     case LEVEL_BOX:
         box_x = new_player_x + dx;
         box_y = new_player_y + dy;
-        /* new_player_x and new_player_y already checked at the start of this function */
-        if (_bounds_check(map, box_x, box_y)) {
-            _update_box(map, box_x, box_y, new_player_x, new_player_y);
-            if (beacon_toggle) {
-                map->soko.player_on_beacon = 1;
-            }
+        if (_update_box(map, box_x, box_y, new_player_x, new_player_y)) {
+            _update_soko(map, new_player_x, new_player_y);
         }
         break;
     /* can't push any other object */

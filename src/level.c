@@ -37,7 +37,7 @@ void free_level(struct level **map)
 
     if (*map != NULL) {
         if ((*map)->data != NULL) {
-            for (i = 0; i < (*map)->width; i++) {
+            for (i = 0; i < (*map)->height; i++) {
                 if ((*map)->data[i] != NULL) {
                     free((*map)->data[i]);
                 }
@@ -55,7 +55,7 @@ struct level *read_level(char *level_name)
 {
     char buffer[512];
     FILE *t;
-    int i, j, soko = 0, tmp;
+    int i, j, soko = 0, tmp, skip = 1;
     struct level *map;
 
     sprintf(buffer, "levels/%s.dat", level_name);
@@ -109,6 +109,14 @@ struct level *read_level(char *level_name)
                 }
             }
         }
+    }
+
+    while ((tmp = fgetc(t)) != EOF) {
+        if (skip && (tmp == '\r' || tmp == '\n' || tmp == ' ')) {
+            continue;
+        }
+        skip = 0;
+        putchar(tmp);
     }
 
     fclose(t);

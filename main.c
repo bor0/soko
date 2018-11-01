@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     }
     else {
         printf("Enter a valid level name (levels/*.dat): ");
-        if (fgets(level_name, 512, stdin) == NULL) {
+        if (fgets(level_name, LEVELNAMESZ, stdin) == NULL) {
             printf("Enter a valid level, m8.\n");
             return 0;
         }
